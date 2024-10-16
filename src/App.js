@@ -1,24 +1,41 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+import CreateRecipe from './components/CreateRecipe';
+import Header from './components/Header';
+import RecipeList from './components/RecipeList';
+import RecipeDetail from './components/RecipeDetail';
+import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 
 function App() {
+
+  const [recipes, setRecipes] = useState([]);   //eklenen tarifler
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+
+  const handleCreateRecipe = (newRecipes) => {
+    setRecipes([...recipes, newRecipes]);
+
+  }
+
+  console.log(recipes);
+
+  const handleRecipeClick = (recipe) => {
+    setSelectedRecipe(recipe);    //seçilen tarifi state'e kaydet
+  }
+
+  const handleCloseDetail = () => {
+    setSelectedRecipe(null);    //detay sayfasını kapat
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Router>
+        <Header/>
+        <Routes>
+          <Route path='/' element = {<CreateRecipe onCreateRecipe={handleCreateRecipe}/>}/>
+          <Route path='/RecipeList' element = {<RecipeList recipes={recipes} onRecipeClick={handleRecipeClick}/>}/>
+          <Route path='/RecipeDetail' element = {<RecipeDetail recipe={selectedRecipe} onCloseDetail={handleCloseDetail} />}/>
+        </Routes>
+      </Router>
+
   );
 }
 
